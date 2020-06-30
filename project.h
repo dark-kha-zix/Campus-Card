@@ -4,58 +4,65 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
+#include <ctime>
 using namespace std;
 
-#define MAX_LIMIT 500				//Ïû·Ñ¡¢³äÖµÏŞ¶î
-#define LOSS_STATE 1				//¿¨´¦ÓÚ¶ªÊ§×´Ì¬
-#define GET_STATE 0					//¿¨ÔÚÊÖÀïÃæ
+#define MAX_LIMIT 500				//æ¶ˆè´¹ã€å……å€¼é™é¢
+#define LOSS_STATE 1				//å¡å¤„äºä¸¢å¤±çŠ¶æ€
+#define GET_STATE 0					//å¡åœ¨æ‰‹é‡Œé¢
+
+typedef struct record {
+	time_t now;
+	int amount;
+} record;
 
 class Student {
 public:
-	Student(string name, string academy, string cllass, string major, Card* card = NULL);
-	~Student();						//ÍËÑ§´¦Àí
-	bool recharge(int amount);		//³äÖµ³É¹¦£¬¿¨Ã»ÓĞ¹ÒÊ§Ê±£¬¼´³äÖµ½ğ¶î´óÓÚ0Ğ¡ÓÚµÈÓÚ500·µ»Øtrue£¬·ñÔò·µ»Øfalse
-	bool expense(int amount);		//¿¨Ã»ÓĞ¹ÒÊ§Ê±£¬Ïû·Ñ½ğ¶î´óÓÚ0Ğ¡ÓÚµÈÓÚ500²¢ÇÒĞ¡ÓÚµ±Ç°Óà¶î·µ»Øtrue£¬·ñÔò·µ»Øfalse
-	void check_status();					//²é¿´×Ô¼ºĞ£Ô°¿¨µÄ×´Ì¬
-	bool loss();						//¹ÒÊ§£¬²»ÄÜ¹ÒÊ§ÒÑ¾­¹ÒÊ§µÄ¿¨
-	bool find();						//ÕÒµ½ÁË¿¨£¬²»ÄÜ¿¨ÔÚ×Ô¼ºÊÖÉÏµ«ÊÇÓÖÕÒµ½ÁË
-	void replace();						//ÖØĞÂ²¹°ì¿¨
-	void check_charge_record();			//²é¿´³äÖµ¼ÇÂ¼
-	void check_expense_record();			//²é¿´Ïû·Ñ¼ÇÂ¼
-	void bind_card();						//Ñ§ÉúºÍ¿¨°ó¶¨
+	Student(string name, string academy, string cllass, string major, Card* card = NULL, int id);
+	~Student();						//é€€å­¦å¤„ç†
+	void recharge(int amount);		//å……å€¼æˆåŠŸï¼Œå¡æ²¡æœ‰æŒ‚å¤±æ—¶ï¼Œå³å……å€¼é‡‘é¢å¤§äº0å°äºç­‰äº500è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+	void expense(int amount);		//å¡æ²¡æœ‰æŒ‚å¤±æ—¶ï¼Œæ¶ˆè´¹é‡‘é¢å¤§äº0å°äºç­‰äº500å¹¶ä¸”å°äºå½“å‰ä½™é¢è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+	bool check_status();					//æŸ¥çœ‹è‡ªå·±æ ¡å›­å¡çš„çŠ¶æ€
+	bool loss();						//æŒ‚å¤±ï¼Œä¸èƒ½æŒ‚å¤±å·²ç»æŒ‚å¤±çš„å¡
+	bool find();						//æ‰¾åˆ°äº†å¡ï¼Œä¸èƒ½å¡åœ¨è‡ªå·±æ‰‹ä¸Šä½†æ˜¯åˆæ‰¾åˆ°äº†
+	void replace();						//é‡æ–°è¡¥åŠå¡
+	void check_charge_record();			//æŸ¥çœ‹å……å€¼è®°å½•
+	void check_expense_record();			//æŸ¥çœ‹æ¶ˆè´¹è®°å½•
+	void bind_card();						//å­¦ç”Ÿå’Œå¡ç»‘å®š
+	int get_id();
 
 private:
 	Card* _card;
 	string _name, _academy, _class, _major;
 	int _id;
-	//Ãû×Ö£¬Ñ§Ôº£¬°à¼¶£¬×¨Òµ£¬Ñ§ºÅ
+	//åå­—ï¼Œå­¦é™¢ï¼Œç­çº§ï¼Œä¸“ä¸šï¼Œå­¦å·
 };
 
 class Card {
 public:
-	Card(int id, int remain = 0, bool flag = 0, Student* stu = NULL);
-	~Card();							//¿¨²»ÏëÒªÁË
-	bool recharge(int amount);			//³äÖµ
-	bool expense(int amount);			//Ïû·Ñ
-	bool set_flag(int flag);			//¹ÒÊ§Óë½â¹ÒÊ§´«ÈëµÄÕâ¸ö²ÎÊıºÍµ±Ç°_flagÏà·´Ê±²ÅÄÜÉèÖÃ³É¹¦
-	int get_remain();					//·µ»ØÓà¶î
-	bool get_flag();					//·µ»Ø¹ÒÊ§×´Ì¬
-	void bind_stu();						//¿¨ºÍÑ§Éú°ó¶¨
-	vector<int> get_charge_record();	//·µ»Ø³äÖµ¼ÇÂ¼
-	vector<int> get_consume_record();	//·µ»ØÏû·Ñ¼ÇÂ¼
+	Card(int id, int remain = 0, string password, bool flag = 0, Student* stu = NULL);
+	~Card();							//å¡ä¸æƒ³è¦äº†
+	bool recharge(int amount);			//å……å€¼
+	bool expense(int amount);			//æ¶ˆè´¹
+	bool set_flag(int flag);			//æŒ‚å¤±ä¸è§£æŒ‚å¤±ä¼ å…¥çš„è¿™ä¸ªå‚æ•°å’Œå½“å‰_flagç›¸åæ—¶æ‰èƒ½è®¾ç½®æˆåŠŸ
+	int get_remain();					//è¿”å›ä½™é¢
+	bool get_flag();					//è¿”å›æŒ‚å¤±çŠ¶æ€
+	void bind_stu();						//å¡å’Œå­¦ç”Ÿç»‘å®š
+	vector<record> get_charge_record();	//è¿”å›å……å€¼è®°å½•
+	vector<record> get_consume_record();	//è¿”å›æ¶ˆè´¹è®°å½•
 
 private:
-	Student* _stu;						//ËùÊôÑ§Éú
-	int _id, _remain;					//¿¨ºÅ£¬Óà¶î
-	vector <int> _charge, _consume;		//³äÖµ£¬Ïû·Ñ¼ÇÂ¼	
-	bool _flag;							//ÊÇ·ñÎª¹ÒÊ§
-	//¿¨ºÅ£¬Óà¶î£¬³äÖµ¼ÇÂ¼£¬Ïû·Ñ¼ÇÂ¼£¬Ğ£Ô°¿¨×´Ì¬
+	Student* _stu;						//æ‰€å±å­¦ç”Ÿ
+	string _password;					//å¯†ç 
+	int _id, _remain;					//å¡å·ï¼Œä½™é¢
+	vector <record> _charge, _consume;		//å……å€¼ï¼Œæ¶ˆè´¹è®°å½•	
+	bool _flag;							//æ˜¯å¦ä¸ºæŒ‚å¤±
+	//å¡å·ï¼Œä½™é¢ï¼Œå……å€¼è®°å½•ï¼Œæ¶ˆè´¹è®°å½•ï¼Œæ ¡å›­å¡çŠ¶æ€
 };
 
-vector <Student> students;				//¹ÜÀíÔ±Ëù´¢´æµÄÈ«Ğ£µÄÑ§ÉúĞÅÏ¢
-vector <Card> cards;					//¹ÜÀíÔ±Ëù´¢´æµÄÈ«Ğ£µÄĞ£Ô°¿¨ĞÅÏ¢
+vector <Student> students;				//ç®¡ç†å‘˜æ‰€å‚¨å­˜çš„å…¨æ ¡çš„å­¦ç”Ÿä¿¡æ¯
+vector <Card> cards;					//ç®¡ç†å‘˜æ‰€å‚¨å­˜çš„å…¨æ ¡çš„æ ¡å›­å¡ä¿¡æ¯
 
-bool create_student();					//¹ÜÀíÔ±´´½¨Ñ§Éú
+bool create_student();					//ç®¡ç†å‘˜åˆ›å»ºå­¦ç”Ÿ
 
-bool create_card();						//¹ÜÀíÔ±´´½¨Ğ£Ô°¿¨
-
+bool create_card();						//ç®¡ç†å‘˜åˆ›å»ºæ ¡å›­å¡

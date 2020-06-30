@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClInclude Include="student.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="project.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{9130A5BF-866D-41C4-958A-2A3E1B3D09C4}</ProjectGuid>
