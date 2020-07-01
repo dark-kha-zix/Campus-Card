@@ -72,7 +72,7 @@ void Student::find() {
 *@重新补办卡
 */
 void Student::replace() {
-	cout << "卡号 " << _stu_id << " 已成功补办，恢复正常使用" << endl;
+	cout << "卡号 " << _stu_id << " 已成功补办，恢复正常使用\n" << endl;
 	if (find_card()->get_flag() == LOSS_STATE) {
 		find();
 	}
@@ -82,24 +82,35 @@ void Student::replace() {
 *@查看充值记录
 */
 void Student::check_charge_record() {
-	puts("时间\t\t充值金额");
+	puts("\t时间\t\t\t充值金额");
 	for (auto i : find_card()->get_charge_record()) {
 		tm *ltm = localtime(&i.now);
-		printf("%d-%d-%d %d:%d:%d\t\t%.2lf\n",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
-											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec, i.amount); 
+		printf("%d-%d-%d %d:%d:%d\t\t",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
+											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec); 
+		if (ltm->tm_sec < 10) {
+			printf("\t");
+		}
+		
+		printf("%.2lf\n", i.amount);
 	}
+	puts("");
 }
 
 /*
 *@查看消费记录
 */
 void Student::check_expense_record() {
-	puts("时间\t\t消费金额");
+	puts("\t时间\t\t\t消费金额");
 	for (auto i : find_card()->get_consume_record()) {
 		tm *ltm = localtime(&i.now);
-		printf("%d-%d-%d %d:%d:%d\t\t%.2lf\n",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
-											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec, i.amount); 
+		printf("%d-%d-%d %d:%d:%d\t\t",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
+											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec); 
+		if (ltm->tm_sec < 10) {
+			printf("\t");
+		}
+		printf("%.2lf\n", i.amount);
 	}
+	puts("");
 }
 
 /*
@@ -107,7 +118,6 @@ void Student::check_expense_record() {
 */
 void Student::bind_card(Card c)	 {
 	_card_id = c.get_card_id();
-	printf("66666!!!!%d\n", _card_id);
 	c.bind_stu(_card_id);
 }
 
@@ -123,8 +133,7 @@ int Student::get_stu_id() {
 */
 Card* Student::find_card() {
 	for (auto i = cards.begin(); i != cards.end(); i++) {
-		printf("%d %d\n",(*i).get_card_id(), _stu_id );
-		if ((*i).get_card_id() == _stu_id) {
+		if ((*i).get_card_id() == _card_id) {
 			return &(*i);
 		}
 	}
@@ -166,12 +175,12 @@ Card::~Card() {
 */
 void Card::recharge(double amount) {
 	if (_flag == LOSS_STATE) {
-		puts("抱歉，此卡已被冻结！");
+		puts("抱歉，此卡已被冻结！\n");
 		return;
 	}
 	
 	if (amount < 0 || amount >500) {
-		puts("充值金额应为0-500！ ");
+		puts("充值金额应为0-500！ \n");
 		return;
 	}
 	
@@ -180,7 +189,7 @@ void Card::recharge(double amount) {
 	tmp.now = time(0);
 	tmp.amount = amount;
 	_charge.emplace_back(tmp);
-	printf("卡号 %d 成功充值 %.2lf 元\n", _card_id, amount);
+	printf("卡号 %d 成功充值 %.2lf 元\n\n", _card_id, amount);
 }
 
 /*
@@ -195,7 +204,7 @@ int Card::get_card_id() {
 */
 void Card::set_password(string password) {
 	_password = password;
-	cout << "密码已被修改为 " << _password << endl;
+	cout << "密码已被修改为 " << _password << endl << endl;
 }
 
 /*
@@ -224,7 +233,7 @@ void Card::expense(double amount) {
 		tmp.now = time(0);
 		tmp.amount = amount;
 		_consume.emplace_back(tmp);
-		printf("卡号 %d 成功消费 %.2lf 元\n");
+		printf("卡号 %d 成功消费 %.2lf 元\n\n", _card_id, amount);
 	}
 }
 
@@ -234,20 +243,20 @@ void Card::expense(double amount) {
 void Card::set_flag(int flag) {
 	if (flag == LOSS_STATE) {
 		if (this->_flag == LOSS_STATE) {
-			puts("您的卡已经处于挂失状态！");
+			puts("您的卡已经处于挂失状态！\n");
 		}
 		else {
 			this->_flag = LOSS_STATE;
-			puts("您的卡成功挂失！期间无法进行消费，充值。");
+			puts("您的卡成功挂失！期间无法进行消费，充值。\n");
 		}
 	}
 	else {
 		if (this->_flag == GET_STATE) {
-			puts("您的卡当前处于正常状态");
+			puts("您的卡当前处于正常状态\n");
 		}
 		else {
 			this->_flag = GET_STATE;
-			puts("您的卡成功解除挂失！可以继续消费，充值。");
+			puts("您的卡成功解除挂失！可以继续消费，充值。\n");
 		}
 	}
 }
@@ -307,9 +316,10 @@ bool create_student() {
 	cin >> cllass;
 	cout << "请输入学生专业：";
 	cin >> major;
+	getchar();
 
 	Student* t = new Student(name, academy, cllass, major, _stu_id);
-	cout << "成功创建学生 " << name << " ,学号 " << _stu_id << " 。" << endl;
+	cout << "成功创建学生:\n姓名: " << name << " \n学号: " << _stu_id << " \n学院: " << academy << "\n班级: " << cllass << "\n专业: " << major << endl << endl;
 	Card *c = new Card(_stu_id, 0, to_string(_stu_id));
 	cards.push_back(*c);
 	(*t).bind_card(*c);
