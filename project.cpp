@@ -1,5 +1,8 @@
 #include "project.h"
 
+vector<Student> students;				//¹ÜÀíÔ±Ëù´¢´æµÄÈ«Ğ£µÄÑ§ÉúĞÅÏ¢
+vector<Card> cards;					//¹ÜÀíÔ±Ëù´¢´æµÄÈ«Ğ£µÄĞ£Ô°¿¨ĞÅÏ¢
+
 /*
 @constructor
 */
@@ -8,100 +11,104 @@ Student::Student(string name, string academy, string cllass, string major, int i
 	_academy = academy;
 	_class = cllass;
 	_major = major;
-	_id = id;	
+	_stu_id = id;	
 }
 
-~Student()Â {
-Â Â Â Â forÂ (autoÂ iÂ =Â students.begin();Â iÂ !=Â student.end();Â i++)Â {
-Â Â Â Â Â Â Â Â ifÂ ((*i).get_stu_id()Â ==Â _stu_id)Â {
-Â Â Â Â Â Â Â Â Â Â Â Â students.erase(i);
-Â Â Â Â Â Â Â Â Â Â Â Â forÂ (autoÂ jÂ =Â cards.begin();Â jÂ !=Â cards.end();Â j++)Â {
-Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â ifÂ ((*j).get_card_id()Â ==Â _card_idÂ )Â {
-Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â cards.erase(j);
-Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â break;
-Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â }
-Â Â Â Â Â Â Â Â Â Â Â Â }
-Â Â Â Â Â Â Â Â Â Â Â Â break;
-Â Â Â Â Â Â Â Â }
-Â Â Â Â }
+Student::~Student() {
+	for(auto i = students.begin(); i != students.end(); i++) {
+		if ((*i).get_stu_id() == _stu_id) {
+			students.erase(i);
+			for (auto j = cards.begin(); j != cards.end(); j++) {
+				if ((*j).get_card_id() == _card_id ) {
+					cards.erase(j);
+					break;
+				}
+			}
+			break;
+		}
+	}
 }
 /*
-*@å……å€¼æˆåŠŸï¼Œå¡æ²¡æœ‰æŒ‚å¤±æ—¶ï¼Œå³å……å€¼é‡‘é¢å¤§äºi0å°äºç­‰äº500è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+*@³äÖµ³É¹¦£¬¿¨Ã»ÓĞ¹ÒÊ§Ê±£¬¼´³äÖµ½ğ¶î´óÓÚi0Ğ¡ÓÚµÈÓÚ500·µ»Øtrue£¬·ñÔò·µ»Øfalse
 */
 void Student::recharge(double amount) {
-	_card->recharge(amount);
+	find_card()->recharge(amount);
 }	
 
 /*
-*@å¡æ²¡æœ‰æŒ‚å¤±æ—¶ï¼Œæ¶ˆè´¹é‡‘é¢å¤§äº0å°äºç­‰äº500å¹¶ä¸”å°äºå½“å‰ä½™é¢è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+*@¿¨Ã»ÓĞ¹ÒÊ§Ê±£¬Ïû·Ñ½ğ¶î´óÓÚ0Ğ¡ÓÚµÈÓÚ500²¢ÇÒĞ¡ÓÚµ±Ç°Óà¶î·µ»Øtrue£¬·ñÔò·µ»Øfalse
 */
-void Student::Student::expense(double amount) {
-	_card->expense(amount);
+void Student::expense(double amount) {
+	find_card()->expense(amount);
 }
 
 /*
-*@æŸ¥çœ‹è‡ªå·±æ ¡å›­å¡çš„çŠ¶æ€
+*@²é¿´×Ô¼ºĞ£Ô°¿¨µÄ×´Ì¬
 */
 void Student::check_status() {
 	if (find_card()->get_flag() == GET_STATE) {
-		puts("æ‚¨çš„å¡ç°åœ¨å¤„äºæ­£å¸¸çŠ¶æ€ï¼");
+		puts("ÄúµÄ¿¨ÏÖÔÚ´¦ÓÚÕı³£×´Ì¬£¡");
 	}
 	else {
-		puts("æ‚¨çš„å¡ç°åœ¨å¤„äºæŒ‚å¤±çŠ¶æ€ï¼");
+		puts("ÄúµÄ¿¨ÏÖÔÚ´¦ÓÚ¹ÒÊ§×´Ì¬£¡");
 	}
 }					
 
 /*
-*@æŒ‚å¤±ï¼Œä¸èƒ½æŒ‚å¤±å·²ç»æŒ‚å¤±çš„å¡
+*@¹ÒÊ§£¬²»ÄÜ¹ÒÊ§ÒÑ¾­¹ÒÊ§µÄ¿¨
 */
 void Student::loss() {
-	find_card->set_flag(LOSS_STATE);
+	find_card()->set_flag(LOSS_STATE);
 }						
 
 /*
-*@æ‰¾åˆ°äº†å¡ï¼Œä¸èƒ½å¡åœ¨è‡ªå·±æ‰‹ä¸Šä½†æ˜¯åˆæ‰¾åˆ°äº†
+*@ÕÒµ½ÁË¿¨£¬²»ÄÜ¿¨ÔÚ×Ô¼ºÊÖÉÏµ«ÊÇÓÖÕÒµ½ÁË
 */
 void Student::find() {
 	find_card()->set_flag(GET_STATE);
 }
 
 /*
-*@é‡æ–°è¡¥åŠå¡
+*@ÖØĞÂ²¹°ì¿¨
 */
 void Student::replace() {
-	find();
+	cout << "¿¨ºÅ " << _stu_id << " ÒÑ³É¹¦²¹°ì£¬»Ö¸´Õı³£Ê¹ÓÃ" << endl;
+	if (find_card()->get_flag() == LOSS_STATE) {
+		find();
+	}
 }
 
 /*
-*@æŸ¥çœ‹å……å€¼è®°å½•
+*@²é¿´³äÖµ¼ÇÂ¼
 */
 void Student::check_charge_record() {
-	puts("æ—¶é—´\t\tå……å€¼é‡‘é¢");
+	puts("Ê±¼ä\t\t³äÖµ½ğ¶î");
 	for (auto i : find_card()->get_charge_record()) {
 		tm *ltm = localtime(&i.now);
 		printf("%d-%d-%d %d:%d:%d\t\t%.2lf\n",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
-											  ltm->tm_hour, ltm->tm_min, ltm->tm.sec, i.amount); 
+											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec, i.amount); 
 	}
 }
 
 /*
-*@æŸ¥çœ‹æ¶ˆè´¹è®°å½•
+*@²é¿´Ïû·Ñ¼ÇÂ¼
 */
 void Student::check_expense_record() {
-	puts("æ—¶é—´\t\tæ¶ˆè´¹é‡‘é¢");
+	puts("Ê±¼ä\t\tÏû·Ñ½ğ¶î");
 	for (auto i : find_card()->get_consume_record()) {
 		tm *ltm = localtime(&i.now);
 		printf("%d-%d-%d %d:%d:%d\t\t%.2lf\n",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
-											  ltm->tm_hour, ltm->tm_min, ltm->tm.sec, i.amount); 
+											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec, i.amount); 
 	}
 }
 
 /*
-*@å­¦ç”Ÿå’Œå¡ç»‘å®š
+*@Ñ§ÉúºÍ¿¨°ó¶¨
 */
-void Student::bind_card(Card c) {
-	_card_id = get_card_id(c);
-	c.bind_stu(*this);
+void Student::bind_card(Card c)	 {
+	_card_id = c.get_card_id();
+	printf("66666!!!!%d\n", _card_id);
+	c.bind_stu(_card_id);
 }
 
 /*
@@ -116,7 +123,21 @@ int Student::get_stu_id() {
 */
 Card* Student::find_card() {
 	for (auto i = cards.begin(); i != cards.end(); i++) {
-		if ((*i).get_card_id() == _card_id) {
+		printf("%d %d\n",(*i).get_card_id(), _stu_id );
+		if ((*i).get_card_id() == _stu_id) {
+			return &(*i);
+		}
+	}
+	return NULL;
+}
+
+string Student::get_name() {
+	return this->_name;
+}
+
+Student* find_student(int id) {
+	for (auto i = students.begin(); i != students.end(); i++) {
+		if ((*i).get_stu_id() == id) {
 			return &(*i);
 		}
 	}
@@ -126,31 +147,31 @@ Card* Student::find_card() {
 /*
 *@
 */
-Card::Card(int id, double remain = 0, string password, bool flag = 0); {
-	this->_id = id;
+Card::Card(int id,  double remain, string password, bool flag) {
+	this->_card_id = id;
 	this->_remain = remain;
 	this->_password = password; 
 	this->_flag = flag;
 }
 
 /*
-*@å¡ä¸æƒ³è¦äº†
+*@¿¨²»ÏëÒªÁË
 */
 Card::~Card() {
 
 }
 
 /*
-*@å……å€¼
+*@³äÖµ
 */
 void Card::recharge(double amount) {
 	if (_flag == LOSS_STATE) {
-		puts("æŠ±æ­‰ï¼Œæ­¤å¡å·²è¢«å†»ç»“ï¼");
+		puts("±§Ç¸£¬´Ë¿¨ÒÑ±»¶³½á£¡");
 		return;
 	}
 	
 	if (amount < 0 || amount >500) {
-		puts("å……å€¼é‡‘é¢åº”ä¸º0-500ï¼ ");
+		puts("³äÖµ½ğ¶îÓ¦Îª0-500£¡ ");
 		return;
 	}
 	
@@ -159,20 +180,43 @@ void Card::recharge(double amount) {
 	tmp.now = time(0);
 	tmp.amount = amount;
 	_charge.emplace_back(tmp);
+	printf("¿¨ºÅ %d ³É¹¦³äÖµ %.2lf Ôª\n", _card_id, amount);
 }
 
 /*
-*@æ¶ˆè´¹
+*@»ñÈ¡¿¨ºÅ
+*/
+int Card::get_card_id() {
+	return _card_id;
+}
+
+/*
+*@ĞŞ¸Ä¿¨ÃÜ
+*/
+void Card::set_password(string password) {
+	_password = password;
+	cout << "ÃÜÂëÒÑ±»ĞŞ¸ÄÎª " << _password << endl;
+}
+
+/*
+*@»ñÈ¡¿¨ÃÜ
+*/
+string Card::get_password() {
+	return _password;
+}
+
+/*
+*@Ïû·Ñ
 */
 void Card::expense(double amount) {
 	if (_flag == LOSS_STATE) {
-		puts("æŠ±æ­‰ï¼Œæ­¤å¡å·²è¢«å†»ç»“ï¼");
+		puts("±§Ç¸£¬´Ë¿¨ÒÑ±»¶³½á£¡");
 	}
 	else if (amount > this->_remain) {
-		puts("æŠ±æ­‰ï¼Œæ‚¨çš„ä½™é¢ä¸è¶³ï¼");
+		puts("±§Ç¸£¬ÄúµÄÓà¶î²»×ã£¡");
 	}
 	else if (amount <= 0) {
-		puts("æŠ±æ­‰ï¼Œæ¶ˆè´¹é‡‘é¢å¿…é¡»ä¸ºæ­£æ•°");
+		puts("±§Ç¸£¬Ïû·Ñ½ğ¶î±ØĞëÎªÕıÊı");
 	}
 	else {
 		this->_remain -= amount;
@@ -180,64 +224,96 @@ void Card::expense(double amount) {
 		tmp.now = time(0);
 		tmp.amount = amount;
 		_consume.emplace_back(tmp);
+		printf("¿¨ºÅ %d ³É¹¦Ïû·Ñ %.2lf Ôª\n");
 	}
 }
 
 /*
-*@æŒ‚å¤±ä¸è§£æŒ‚å¤±ä¼ å…¥çš„è¿™ä¸ªå‚æ•°å’Œå½“å‰_flagç›¸åæ—¶æ‰èƒ½è®¾ç½®æˆåŠŸ
+*@¹ÒÊ§Óë½â¹ÒÊ§´«ÈëµÄÕâ¸ö²ÎÊıºÍµ±Ç°_flagÏà·´Ê±²ÅÄÜÉèÖÃ³É¹¦
 */
 void Card::set_flag(int flag) {
 	if (flag == LOSS_STATE) {
 		if (this->_flag == LOSS_STATE) {
-			puts("æ‚¨çš„å¡å·²ç»å¤„äºæŒ‚å¤±çŠ¶æ€ï¼");
+			puts("ÄúµÄ¿¨ÒÑ¾­´¦ÓÚ¹ÒÊ§×´Ì¬£¡");
 		}
 		else {
 			this->_flag = LOSS_STATE;
-			puts("æ‚¨çš„å¡æˆåŠŸæŒ‚å¤±ï¼æœŸé—´æ— æ³•è¿›è¡Œæ¶ˆè´¹ï¼Œå……å€¼ã€‚");
+			puts("ÄúµÄ¿¨³É¹¦¹ÒÊ§£¡ÆÚ¼äÎŞ·¨½øĞĞÏû·Ñ£¬³äÖµ¡£");
 		}
 	}
 	else {
 		if (this->_flag == GET_STATE) {
-			puts("æ‚¨çš„å¡å½“å‰å¤„äºæ­£å¸¸çŠ¶æ€");
+			puts("ÄúµÄ¿¨µ±Ç°´¦ÓÚÕı³£×´Ì¬");
 		}
 		else {
 			this->_flag = GET_STATE;
-			puts("æ‚¨çš„å¡æˆåŠŸè§£é™¤æŒ‚å¤±ï¼å¯ä»¥ç»§ç»­æ¶ˆè´¹ï¼Œå……å€¼ã€‚");
+			puts("ÄúµÄ¿¨³É¹¦½â³ı¹ÒÊ§£¡¿ÉÒÔ¼ÌĞøÏû·Ñ£¬³äÖµ¡£");
 		}
 	}
 }
 
 /*
-*@è¿”å›ä½™é¢
+*@·µ»ØÓà¶î
 */
-int Card::get_remain() {
+double Card::get_remain() {
 	return this->_remain;
 }
 
 /*
-*@è¿”å›æŒ‚å¤±çŠ¶æ€
+*@·µ»Ø¹ÒÊ§×´Ì¬
 */
 bool Card::get_flag() {
 	return this->_flag;
 }
 
 /*
-*@å¡å’Œå­¦ç”Ÿç»‘å®š
+*@¿¨ºÍÑ§Éú°ó¶¨
 */
-void Card::bind_stu(Student s) {
-	_stu_id = s.get_stu_id();
+void Card::bind_stu(int id) {
+	_stu_id = id;
+	_password = to_string(_stu_id);
 }
 
 /*
-*@è¿”å›å……å€¼è®°å½•
+*@·µ»Ø³äÖµ¼ÇÂ¼
 */
 vector<record> Card::get_charge_record() {
 	return _charge;
 }
 
 /*
-*@è¿”å›æ¶ˆè´¹è®°å½•
+*@·µ»ØÏû·Ñ¼ÇÂ¼
 */
 vector<record> Card::get_consume_record() {
-	return _cousume;
+	return _consume;
 }
+
+bool create_student() {
+	string name,academy,cllass,major;
+	int _stu_id;
+	cout << "ÇëÊäÈëÑ§ÉúÑ§ºÅ£º";
+	cin >> _stu_id;
+	for(auto i = students.begin(); i != students.end(); i++) {
+		if ((*i).get_stu_id() == _stu_id) {
+			cout << "¸ÃÑ§ºÅÒÑ´æÔÚ£¡" << endl;
+			return false;
+		}
+	}
+	cout << "ÇëÊäÈëÑ§ÉúĞÕÃû£º";
+	cin >> name;
+	cout << "ÇëÊäÈëÑ§ÉúËùÊôÑ§Ôº£º";
+	cin >> academy;
+	cout << "ÇëÊäÈëÑ§ÉúËùÊô°à¼¶£º";
+	cin >> cllass;
+	cout << "ÇëÊäÈëÑ§Éú×¨Òµ£º";
+	cin >> major;
+
+	Student* t = new Student(name, academy, cllass, major, _stu_id);
+	cout << "³É¹¦´´½¨Ñ§Éú " << name << " ,Ñ§ºÅ " << _stu_id << " ¡£" << endl;
+	Card *c = new Card(_stu_id, 0, to_string(_stu_id));
+	cards.push_back(*c);
+	(*t).bind_card(*c);
+	students.push_back(*t);
+	return true;
+}					//¹ÜÀíÔ±´´½¨Ñ§Éú
+
