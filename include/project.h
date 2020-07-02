@@ -58,7 +58,8 @@ public:
 	void replace();						//重新补办卡
 	void check_charge_record();			//查看充值记录
 	void check_expense_record();			//查看消费记录
-	void bind_card(Card);						//学生和卡绑定
+	void bind_card(Card&);						//学生和卡绑定
+	void delete_student();
 	string get_name();
 	Card* find_card();
 	int get_stu_id();
@@ -69,6 +70,9 @@ private:
 	int _stu_id;
 	//名字，学院，班级，专业，学号
 };
+
+extern vector<Student> students;				//管理员所储存的全校的学生信息
+extern vector<Card> cards;					//管理员所储存的全校的校园卡信息
 
 bool create_student();					//管理员创建学生
 bool create_card();						//管理员创建校园卡

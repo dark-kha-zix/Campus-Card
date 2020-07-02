@@ -1,10 +1,16 @@
-#include "project.h"
+#include "../include/UI.h"
 
 void help_menu() {
-    puts("1---创建学生");
+    puts("1---管理员登录");
     puts("2---学生登录");
     puts("3---显示帮助");
-    puts("4---退出");
+    puts("4---退出\n");
+}
+
+void help_admin_service() {
+	puts("1---创建学生");
+	puts("2---移除学生");
+	puts("q---退出\n");
 }
 
 void help_student_service() {
@@ -18,6 +24,55 @@ void help_student_service() {
     puts("8---查询消费记录");
     puts("9---修改密码");
     puts("q---退出\n");
+}
+
+void admin_service() {
+	char flag = '0';
+    cout << endl << "欢迎进入管理员系统! " << endl;
+    help_admin_service();
+    
+    while (flag != 'q') {
+    	do {
+			cout << "[admin]";
+    		scanf("%c", &flag);
+		}while(flag == '\n');
+		
+		switch(flag) {
+			case '1': {
+				create_student();
+				break;
+			}
+			case '2': {
+				int id;
+				printf("请输入要移除的学生学号: ");
+				scanf("%d", &id);
+				getchar();
+				
+				Student* tmp = find_student(id);
+				if (tmp == NULL) {
+					puts("抱歉！该学生不存在!\n");
+				}
+				else {
+					tmp->delete_student();
+					printf("学生 %d 已被成功移除\n\n", id);
+				}
+				break;
+			}
+			
+			case 'q': {
+				getchar();
+				puts("成功退出！拜拜您嘞~\n");
+				break;
+			}
+			
+			default: {
+				getchar();
+				puts("非法命令，请重新输入！\n");
+				help_admin_service();
+				break;
+			}
+		}
+	}
 }
 
 void student_service(Student *s) {
@@ -96,6 +151,7 @@ void student_service(Student *s) {
 			break;
 		}
         default: {
+        	getchar();
             puts("非法命令！请重新输入");
             help_student_service();
             break;
@@ -116,7 +172,16 @@ void UI() {
     	
         switch(flag) {
             case '1': {
-                create_student();
+                string password;
+                printf("请输入管理员密码: ");
+                cin >> password;
+                getchar();
+                if (password != "admin") {
+                	puts("管理员密码错误！\n");
+				}
+				else {
+					admin_service();
+				}
                 break;
             }
             case '2': {
@@ -125,7 +190,7 @@ void UI() {
 
                 cout << "请输入学号：";
                 cin >> id;
-
+				getchar();
                 if (find_student(id) == NULL) {
                     puts("该学号不存在！\n");
                     break;
@@ -143,6 +208,7 @@ void UI() {
                 break;
             }
             case '3': {
+            	getchar();
             	help_menu();
                 break;
             }
@@ -155,6 +221,7 @@ void UI() {
 			}
 
             default:{
+            	getchar();
                 puts("非法命令！请重新输入\n");
                 help_menu();
                 break;
@@ -162,9 +229,3 @@ void UI() {
         }
     }
 }
-
-int main() {
-	puts("--------欢迎来到校园卡管理系统----------\n");
-    UI();
-}
-

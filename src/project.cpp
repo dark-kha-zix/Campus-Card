@@ -1,4 +1,4 @@
-#include "project.h"
+#include "../include/project.h"
 
 vector<Student> students;				//管理员所储存的全校的学生信息
 vector<Card> cards;					//管理员所储存的全校的校园卡信息
@@ -15,11 +15,17 @@ Student::Student(string name, string academy, string cllass, string major, int i
 }
 
 Student::~Student() {
+	
+}
+
+void Student::delete_student() {
+	int temp = _stu_id;
+
 	for(auto i = students.begin(); i != students.end(); i++) {
-		if ((*i).get_stu_id() == _stu_id) {
+		if ((*i).get_stu_id() == temp) {
 			students.erase(i);
 			for (auto j = cards.begin(); j != cards.end(); j++) {
-				if ((*j).get_card_id() == _card_id ) {
+				if ((*j).get_card_id() == temp ) {
 					cards.erase(j);
 					break;
 				}
@@ -27,7 +33,9 @@ Student::~Student() {
 			break;
 		}
 	}
+
 }
+
 /*
 *@充值成功，卡没有挂失时，即充值金额大于i0小于等于500返回true，否则返回false
 */
@@ -47,10 +55,10 @@ void Student::expense(double amount) {
 */
 void Student::check_status() {
 	if (find_card()->get_flag() == GET_STATE) {
-		puts("您的卡现在处于正常状态！");
+		puts("您的卡现在处于正常状态！\n");
 	}
 	else {
-		puts("您的卡现在处于挂失状态！");
+		puts("您的卡现在处于挂失状态！\n");
 	}
 }					
 
@@ -105,7 +113,7 @@ void Student::check_expense_record() {
 		tm *ltm = localtime(&i.now);
 		printf("%d-%d-%d %d:%d:%d\t\t",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
 											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec); 
-		if (ltm->tm_sec < 10) {
+		if (ltm->tm_sec < 10 || ltm->tm_hour < 10 || ltm->tm_min < 10) {
 			printf("\t");
 		}
 		printf("%.2lf\n", i.amount);
@@ -116,7 +124,7 @@ void Student::check_expense_record() {
 /*
 *@学生和卡绑定
 */
-void Student::bind_card(Card c)	 {
+void Student::bind_card(Card &c)	 {
 	_card_id = c.get_card_id();
 	c.bind_stu(_card_id);
 }
@@ -146,6 +154,7 @@ string Student::get_name() {
 
 Student* find_student(int id) {
 	for (auto i = students.begin(); i != students.end(); i++) {
+		
 		if ((*i).get_stu_id() == id) {
 			return &(*i);
 		}
@@ -167,7 +176,6 @@ Card::Card(int id,  double remain, string password, bool flag) {
 *@卡不想要了
 */
 Card::~Card() {
-
 }
 
 /*
@@ -219,13 +227,13 @@ string Card::get_password() {
 */
 void Card::expense(double amount) {
 	if (_flag == LOSS_STATE) {
-		puts("抱歉，此卡已被冻结！");
+		puts("抱歉，此卡已被冻结！\n");
 	}
 	else if (amount > this->_remain) {
-		puts("抱歉，您的余额不足！");
+		puts("抱歉，您的余额不足！\n");
 	}
 	else if (amount <= 0) {
-		puts("抱歉，消费金额必须为正数");
+		puts("抱歉，消费金额必须为正数\n");
 	}
 	else {
 		this->_remain -= amount;
@@ -304,7 +312,7 @@ bool create_student() {
 	cin >> _stu_id;
 	for(auto i = students.begin(); i != students.end(); i++) {
 		if ((*i).get_stu_id() == _stu_id) {
-			cout << "该学号已存在！" << endl;
+			cout << "该学号已存在！\n" << endl;
 			return false;
 		}
 	}
@@ -321,9 +329,11 @@ bool create_student() {
 	Student* t = new Student(name, academy, cllass, major, _stu_id);
 	cout << "成功创建学生:\n姓名: " << name << " \n学号: " << _stu_id << " \n学院: " << academy << "\n班级: " << cllass << "\n专业: " << major << endl << endl;
 	Card *c = new Card(_stu_id, 0, to_string(_stu_id));
-	cards.push_back(*c);
+	
 	(*t).bind_card(*c);
-	students.push_back(*t);
+	students.emplace_back(*t);
+	cards.emplace_back(*c);
+	
 	return true;
 }					//管理员创建学生
 
