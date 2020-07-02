@@ -93,11 +93,8 @@ void Student::check_charge_record() {
 	puts("\t时间\t\t\t充值金额");
 	for (auto i : find_card()->get_charge_record()) {
 		tm *ltm = localtime(&i.now);
-		printf("%d-%d-%d %d:%d:%d\t\t",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
+		printf("%02d-%02d-%02d %02d:%02d:%02d\t\t",1900+ltm->tm_year, 1+ltm->tm_mon, ltm->tm_mday,
 											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec); 
-		if (ltm->tm_sec < 10) {
-			printf("\t");
-		}
 		
 		printf("%.2lf\n", i.amount);
 	}
@@ -111,11 +108,8 @@ void Student::check_expense_record() {
 	puts("\t时间\t\t\t消费金额");
 	for (auto i : find_card()->get_consume_record()) {
 		tm *ltm = localtime(&i.now);
-		printf("%d-%d-%d %d:%d:%d\t\t",ltm->tm_year, ltm->tm_mon, ltm->tm_mday,
+		printf("%02d-%02d-%02d %02d:%02d:%02d\t\t",1900+ltm->tm_year, 1+ltm->tm_mon, ltm->tm_mday,
 											  ltm->tm_hour, ltm->tm_min, ltm->tm_sec); 
-		if (ltm->tm_sec < 10 || ltm->tm_hour < 10 || ltm->tm_min < 10) {
-			printf("\t");
-		}
 		printf("%.2lf\n", i.amount);
 	}
 	puts("");
